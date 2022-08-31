@@ -30,36 +30,23 @@ public class SecurityConfiguration {
   ServerOauth2UserService oAuth2UserService;
   OAuth2AuthenticationSuccessHandler successHandler;
 
-  // @formatter:off
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.httpBasic()
-        .disable()
-        .exceptionHandling()
-        .authenticationEntryPoint(unauthorizedHandler)
-        .and()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .authorizeRequests()
-        .antMatchers("/api/auth/**", "/oauth2/**", "/api/search/**", "/ws/**")
-        .permitAll()
-        .antMatchers("/actuator/**")
-        .hasAnyRole("ADMIN", "ROOT")
-        .antMatchers(HttpMethod.GET, "/api/collections/**")
-        .permitAll()
-        .anyRequest()
-        .authenticated();
+    http.httpBasic().disable()
+        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+        .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and().authorizeRequests()
+        .antMatchers("/api/auth/**", "/oauth2/**", "/api/search/**", "/ws/**").permitAll()
+        .antMatchers("/actuator/**").hasAnyRole("ADMIN", "ROOT")
+        .antMatchers(HttpMethod.GET, "/api/collections/**").permitAll()
+        .anyRequest().authenticated();
     http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
     http.oauth2Login()
-        .userInfoEndpoint()
-        .userService(oAuth2UserService)
-        .and()
-        .successHandler(successHandler);
+        .userInfoEndpoint().userService(oAuth2UserService)
+        .and().successHandler(successHandler);
     http.cors().and().csrf().disable();
     return http.build();
   }
-  // @formatter:on
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)
