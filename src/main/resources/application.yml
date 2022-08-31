@@ -1,0 +1,61 @@
+server:
+  port: 8080
+spring:
+  datasource:
+    driver-class-name: org.postgresql.Driver
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: none
+    open-in-view: false
+    properties:
+      hibernate.search.backend:
+        lucene_version: 'LATEST'
+        directory.root: './temp/lucene/indices'
+    database-platform: 'org.hibernate.dialect.PostgreSQL95Dialect'
+  messages:
+    always-use-message-format: true
+    fallback-to-system-locale: true
+    basename: 'messages'
+    encoding: UTF-8
+  security:
+    oauth2.client.registration:
+      github:
+        clientId: ${GIT_CLIENT_ID}
+        clientSecret: ${GIT_CLIENT_SECRET}
+jwt:
+  expiration-time: 1800000
+  secret: ${JWT_SECRET}
+  type: 'Bearer'
+  header:
+    name: ${JWT_HEADER}
+  refresh:
+    expiration-time: 7200000
+cors:
+  allowed-origins: ${ALLOWED_ORIGINS}
+  allowed-methods: '*'
+  allow-credentials: true
+  allowed-headers: '*'
+  mapping: '/**'
+web-socket:
+  app: '/app'
+  user: '/user'
+  broker: '/comment'
+  endpoint: '/ws'
+  allowed-origins: '*'
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+cloudinary:
+  cloud-name: ${CLOUDINARY_CLOUD_NAME}
+  api-key: ${CLODINARY_API_KEY}
+  api-secret: ${CLODINARY_API_SECRET}
+oauth2:
+  redirect: ${OAUTH2_REDIRECT}
+  query-parameter: ${OAUTH2_QUERY_PARAM}

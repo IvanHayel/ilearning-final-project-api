@@ -24,9 +24,12 @@ hs_err_pid*
 
 # Intellij IDEA
 *.iml
+
+# Generated
 build
 .gradle
 temp
 logs
-gradlew
-gradlew.bat
+
+# Disable
+!gradle/wrapper/gradle-wrapper.jar
