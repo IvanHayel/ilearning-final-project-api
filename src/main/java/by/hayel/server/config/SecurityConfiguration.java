@@ -1,6 +1,7 @@
 package by.hayel.server.config;
 
 import by.hayel.server.config.handler.OAuth2AuthenticationSuccessHandler;
+import by.hayel.server.config.property.ClientProperty;
 import by.hayel.server.service.security.impl.ServerOauth2UserService;
 import by.hayel.server.web.filter.security.AuthenticationTokenFilter;
 import lombok.AccessLevel;
@@ -28,6 +29,7 @@ public class SecurityConfiguration {
   AuthenticationEntryPoint unauthorizedHandler;
   AuthenticationTokenFilter tokenFilter;
   ServerOauth2UserService oAuth2UserService;
+  ClientProperty clientProperty;
   OAuth2AuthenticationSuccessHandler successHandler;
 
   @Bean
@@ -43,7 +45,7 @@ public class SecurityConfiguration {
     http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
     http.oauth2Login()
         .userInfoEndpoint().userService(oAuth2UserService)
-        .and().successHandler(successHandler);
+        .and().successHandler(successHandler).failureUrl(clientProperty.getUrl());
     http.cors().and().csrf().disable();
     return http.build();
   }
