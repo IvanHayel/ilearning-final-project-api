@@ -1,13 +1,20 @@
 package by.hayel.server.service.collection;
 
 import by.hayel.server.model.entity.collection.CollectionItem;
+import by.hayel.server.model.entity.collection.UserCollection;
+import by.hayel.server.model.entity.collection.dto.CollectionItemDto;
 import by.hayel.server.model.entity.collection.dto.CommentDto;
 import java.util.List;
+import org.springframework.data.domain.Sort;
 
 public interface ItemService {
   List<CollectionItem> getItems();
 
-  CollectionItem get(Long id);
+  List<CollectionItemDto> getItemsByCollection(UserCollection collection, Sort sort);
+
+  CollectionItemDto getItemByCollectionAndId(UserCollection collection, Long id);
+
+  CollectionItem getItemById(Long id);
 
   List<CommentDto> getItemComments(Long id);
 

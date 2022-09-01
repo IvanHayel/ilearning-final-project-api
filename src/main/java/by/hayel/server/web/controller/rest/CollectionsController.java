@@ -1,5 +1,7 @@
 package by.hayel.server.web.controller.rest;
 
+import by.hayel.server.model.entity.collection.CollectionsSortDirection;
+import by.hayel.server.model.entity.collection.CollectionsSortStrategy;
 import by.hayel.server.model.entity.collection.dto.CollectionItemDto;
 import by.hayel.server.model.entity.collection.dto.TagDto;
 import by.hayel.server.model.entity.collection.dto.ThemeDto;
@@ -16,6 +18,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.lang.Nullable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,14 +40,38 @@ public class CollectionsController {
   ThemeService themeService;
   TagService tagService;
 
+  private CollectionsSortDirection parseSortDirection(@Nullable String direction) {
+    try {
+      return CollectionsSortDirection.valueOf(direction);
+    } catch (IllegalArgumentException | NullPointerException exception) {
+      return CollectionsSortDirection.DEFAULT;
+    }
+  }
+
+  private CollectionsSortStrategy parseSortStrategy(@Nullable String strategy) {
+    try {
+      return CollectionsSortStrategy.valueOf(strategy);
+    } catch (IllegalArgumentException | NullPointerException exception) {
+      return CollectionsSortStrategy.DEFAULT;
+    }
+  }
+
   @GetMapping
-  public List<UserCollectionDto> getGlobalCollections(@RequestParam(required = false) String sort) {
-    return collectionsService.getGlobalCollections();
+  public List<UserCollectionDto> getGlobalCollections(
+      @RequestParam(required = false) String direction,
+      @RequestParam(required = false) String strategy) {
+    var sortDirection = parseSortDirection(direction);
+    var sortStrategy = parseSortStrategy(strategy);
+    return collectionsService.getGlobalCollections(sortDirection, sortStrategy);
   }
 
   @GetMapping("/own/list")
-  public List<UserCollectionDto> getUserCollections(@RequestParam(required = false) String sort) {
-    return collectionsService.getUserCollections();
+  public List<UserCollectionDto> getUserCollections(
+      @RequestParam(required = false) String direction,
+      @RequestParam(required = false) String strategy) {
+    var sortDirection = parseSortDirection(direction);
+    var sortStrategy = parseSortStrategy(strategy);
+    return collectionsService.getUserCollections(sortDirection, sortStrategy);
   }
 
   @GetMapping("/top/{count}")
@@ -59,8 +86,12 @@ public class CollectionsController {
 
   @GetMapping("/{name}/items")
   public List<CollectionItemDto> getCollectionItems(
-      @PathVariable String name, @RequestParam(required = false) String sort) {
-    return collectionsService.getCollectionItems(name);
+      @PathVariable String name,
+      @RequestParam(required = false) String direction,
+      @RequestParam(required = false) String strategy) {
+    var sortDirection = parseSortDirection(direction);
+    var sortStrategy = parseSortStrategy(strategy);
+    return collectionsService.getCollectionItems(name, sortDirection, sortStrategy);
   }
 
   @GetMapping("/{name}/items/{id}")
