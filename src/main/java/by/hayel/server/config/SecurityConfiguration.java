@@ -1,6 +1,7 @@
 package by.hayel.server.config;
 
 import by.hayel.server.config.handler.OAuth2AuthenticationSuccessHandler;
+import by.hayel.server.config.property.ClientProperty;
 import by.hayel.server.service.security.impl.ServerOauth2UserService;
 import by.hayel.server.web.filter.security.AuthenticationTokenFilter;
 import lombok.AccessLevel;
@@ -28,38 +29,26 @@ public class SecurityConfiguration {
   AuthenticationEntryPoint unauthorizedHandler;
   AuthenticationTokenFilter tokenFilter;
   ServerOauth2UserService oAuth2UserService;
+  ClientProperty clientProperty;
   OAuth2AuthenticationSuccessHandler successHandler;
 
-  // @formatter:off
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-    http.httpBasic()
-        .disable()
-        .exceptionHandling()
-        .authenticationEntryPoint(unauthorizedHandler)
-        .and()
-        .sessionManagement()
-        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-        .and()
-        .authorizeRequests()
-        .antMatchers("/api/auth/**", "/oauth2/**", "/api/search/**", "/ws/**")
-        .permitAll()
-        .antMatchers("/actuator/**")
-        .hasAnyRole("ADMIN", "ROOT")
-        .antMatchers(HttpMethod.GET, "/api/collections/**")
-        .permitAll()
-        .anyRequest()
-        .authenticated();
+    http.httpBasic().disable()
+        .exceptionHandling().authenticationEntryPoint(unauthorizedHandler)
+        .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+        .and().authorizeRequests()
+        .antMatchers("/api/auth/**", "/oauth2/**", "/api/search/**", "/ws/**").permitAll()
+        .antMatchers("/actuator/**").hasAnyRole("ADMIN", "ROOT")
+        .antMatchers(HttpMethod.GET, "/api/collections/**").permitAll()
+        .anyRequest().authenticated();
     http.addFilterBefore(tokenFilter, UsernamePasswordAuthenticationFilter.class);
     http.oauth2Login()
-        .userInfoEndpoint()
-        .userService(oAuth2UserService)
-        .and()
-        .successHandler(successHandler);
+        .userInfoEndpoint().userService(oAuth2UserService)
+        .and().successHandler(successHandler).failureUrl(clientProperty.getUrl());
     http.cors().and().csrf().disable();
     return http.build();
   }
-  // @formatter:on
 
   @Bean
   public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration)

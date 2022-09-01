@@ -1,5 +1,6 @@
 package by.hayel.server;
 
+import by.hayel.server.config.property.ClientProperty;
 import by.hayel.server.config.property.CloudinaryProperty;
 import by.hayel.server.config.property.CorsProperty;
 import by.hayel.server.config.property.JwtProperty;
@@ -11,6 +12,7 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 
 @SpringBootApplication
 @EnableConfigurationProperties({
+  ClientProperty.class,
   JwtProperty.class,
   CorsProperty.class,
   WebSocketProperty.class,
