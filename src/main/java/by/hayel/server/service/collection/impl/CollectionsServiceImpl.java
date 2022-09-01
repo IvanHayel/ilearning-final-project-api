@@ -6,11 +6,11 @@ import static by.hayel.server.service.cloud.CloudinaryService.CLOUDINARY_SECURE_
 import by.hayel.server.exception.collection.CollectionNameAlreadyExistException;
 import by.hayel.server.exception.collection.CollectionNotFoundException;
 import by.hayel.server.exception.collection.ItemNameAlreadyExistException;
-import by.hayel.server.exception.collection.ItemNotFoundException;
 import by.hayel.server.exception.collection.LikeNotFoundException;
-import by.hayel.server.mapper.collection.CollectionItemMapper;
 import by.hayel.server.mapper.collection.UserCollectionMapper;
 import by.hayel.server.model.entity.collection.CollectionItem;
+import by.hayel.server.model.entity.collection.CollectionsSortDirection;
+import by.hayel.server.model.entity.collection.CollectionsSortStrategy;
 import by.hayel.server.model.entity.collection.Like;
 import by.hayel.server.model.entity.collection.UserCollection;
 import by.hayel.server.model.entity.collection.dto.CollectionItemDto;
@@ -31,6 +31,7 @@ import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +42,6 @@ public class CollectionsServiceImpl implements CollectionsService {
   UserCollectionRepository repository;
 
   UserCollectionMapper mapper;
-  CollectionItemMapper itemMapper;
 
   AuthenticationService authenticationService;
   CloudinaryService cloudinaryService;
@@ -52,15 +52,21 @@ public class CollectionsServiceImpl implements CollectionsService {
 
   @Override
   @Transactional
-  public List<UserCollectionDto> getGlobalCollections() {
-    return mapper.userCollectionsToUserCollectionDtos(repository.findAll());
+  public List<UserCollectionDto> getGlobalCollections(
+      CollectionsSortDirection sortDirection, CollectionsSortStrategy sortStrategy) {
+    var sort = Sort.by(sortDirection.getDirection(), sortStrategy.getFieldName());
+    var collections = repository.findAll(sort);
+    return mapper.userCollectionsToUserCollectionDtos(collections);
   }
 
   @Override
   @Transactional
-  public List<UserCollectionDto> getUserCollections() {
+  public List<UserCollectionDto> getUserCollections(
+      CollectionsSortDirection sortDirection, CollectionsSortStrategy sortStrategy) {
     var user = authenticationService.getCurrentUser();
-    return mapper.userCollectionsToUserCollectionDtos(repository.findAllByOwner(user));
+    var sort = Sort.by(sortDirection.getDirection(), sortStrategy.getFieldName());
+    var collections = repository.findAllByOwner(user, sort);
+    return mapper.userCollectionsToUserCollectionDtos(collections);
   }
 
   @Override
@@ -84,9 +90,11 @@ public class CollectionsServiceImpl implements CollectionsService {
 
   @Override
   @Transactional
-  public List<CollectionItemDto> getCollectionItems(String name) {
+  public List<CollectionItemDto> getCollectionItems(
+      String name, CollectionsSortDirection sortDirection, CollectionsSortStrategy sortStrategy) {
     var collection = getCollectionByName(name);
-    return itemMapper.collectionItemsToCollectionItemDtos(collection.getItems());
+    var sort = Sort.by(sortDirection.getDirection(), sortStrategy.getFieldName());
+    return itemService.getItemsByCollection(collection, sort);
   }
 
   @Override
@@ -187,7 +195,7 @@ public class CollectionsServiceImpl implements CollectionsService {
     var user = authenticationService.getCurrentUser();
     var collection = getCollectionByName(collectionName);
     var owner = collection.getOwner();
-    var itemToUpdate = itemService.get(request.getId());
+    var itemToUpdate = itemService.getItemById(request.getId());
     if (isUpdatedItemNameAlreadyExist(request.getName(), itemToUpdate.getName())) {
       throw new ItemNameAlreadyExistException();
     }
@@ -231,7 +239,7 @@ public class CollectionsServiceImpl implements CollectionsService {
     var collection = getCollectionByName(collectionName);
     var owner = collection.getOwner();
     if (authenticationService.isPermissible(user, owner)) {
-      var item = itemService.get(itemId);
+      var item = itemService.getItemById(itemId);
       cloudinaryService.removeByPublicId(item.getImagePublicId());
       itemService.delete(itemId);
     }
@@ -241,7 +249,7 @@ public class CollectionsServiceImpl implements CollectionsService {
   @Transactional
   public void likeItem(Long itemId) {
     var user = authenticationService.getCurrentUser();
-    CollectionItem item = itemService.get(itemId);
+    CollectionItem item = itemService.getItemById(itemId);
     var likes = item.getLikes();
     if (isAlreadyLiked(user, likes)) {
       Like likeToRemove = findLike(user, likes);
@@ -273,11 +281,7 @@ public class CollectionsServiceImpl implements CollectionsService {
   @Transactional
   public CollectionItemDto getCollectionItem(String name, Long itemId) {
     var collection = getCollectionByName(name);
-    CollectionItem item = itemService.get(itemId);
-    if (collection.getItems().contains(item)) {
-      return itemMapper.collectionItemToCollectionItemDto(item);
-    }
-    throw new ItemNotFoundException();
+    return itemService.getItemByCollectionAndId(collection, itemId);
   }
 
   @Override

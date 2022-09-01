@@ -29,8 +29,8 @@ public class SecurityConfiguration {
   AuthenticationEntryPoint unauthorizedHandler;
   AuthenticationTokenFilter tokenFilter;
   ServerOauth2UserService oAuth2UserService;
-  ClientProperty clientProperty;
   OAuth2AuthenticationSuccessHandler successHandler;
+  ClientProperty clientProperty;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {

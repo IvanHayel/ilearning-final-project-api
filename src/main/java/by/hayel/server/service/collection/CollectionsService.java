@@ -1,5 +1,7 @@
 package by.hayel.server.service.collection;
 
+import by.hayel.server.model.entity.collection.CollectionsSortDirection;
+import by.hayel.server.model.entity.collection.CollectionsSortStrategy;
 import by.hayel.server.model.entity.collection.UserCollection;
 import by.hayel.server.model.entity.collection.dto.CollectionItemDto;
 import by.hayel.server.model.entity.collection.dto.UserCollectionDto;
@@ -8,9 +10,11 @@ import by.hayel.server.web.payload.request.ItemRequest;
 import java.util.List;
 
 public interface CollectionsService {
-  List<UserCollectionDto> getGlobalCollections();
+  List<UserCollectionDto> getGlobalCollections(
+      CollectionsSortDirection sortDirection, CollectionsSortStrategy sortStrategy);
 
-  List<UserCollectionDto> getUserCollections();
+  List<UserCollectionDto> getUserCollections(
+      CollectionsSortDirection sortDirection, CollectionsSortStrategy sortStrategy);
 
   UserCollectionDto getCollectionDtoByName(String name);
 
@@ -18,7 +22,8 @@ public interface CollectionsService {
 
   UserCollection getCollectionByName(String name);
 
-  List<CollectionItemDto> getCollectionItems(String name);
+  List<CollectionItemDto> getCollectionItems(
+      String name, CollectionsSortDirection sortDirection, CollectionsSortStrategy sortStrategy);
 
   void addCollection(CollectionRequest request);
 

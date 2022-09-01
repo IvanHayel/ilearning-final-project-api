@@ -9,7 +9,7 @@ import by.hayel.server.model.entity.collection.UserCollection;
 import by.hayel.server.model.entity.collection.dto.CollectionItemDto;
 import by.hayel.server.model.entity.collection.dto.UserCollectionDto;
 import by.hayel.server.model.search.CollectionItemSearchFields;
-import by.hayel.server.model.search.SortStrategy;
+import by.hayel.server.model.entity.collection.CollectionsSortStrategy;
 import by.hayel.server.model.search.UserCollectionSearchFields;
 import by.hayel.server.service.search.HibernateSearchService;
 import java.util.List;
@@ -87,10 +87,5 @@ public class HibernateSearchServiceImpl implements HibernateSearchService {
     var result =
         searchAll(CollectionItem.class, tag, CollectionItemSearchFields.ITEM_TAGS_NAME.getName());
     return itemMapper.collectionItemsToCollectionItemDtos(result.hits());
-  }
-
-  @Override
-  public <T extends BaseEntity> List<T> sort(List<T> list, SortStrategy sortStrategy) {
-    return null;
   }
 }
