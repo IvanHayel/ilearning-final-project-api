@@ -27,6 +27,8 @@ spring:
       github:
         clientId: ${GIT_CLIENT_ID}
         clientSecret: ${GIT_CLIENT_SECRET}
+client:
+  url: ${CLIENT_URL}
 jwt:
   expiration-time: 1800000
   secret: ${JWT_SECRET}
