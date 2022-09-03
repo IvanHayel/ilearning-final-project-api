@@ -14,5 +14,7 @@ public interface UserCollectionRepository extends JpaRepository<UserCollection, 
 
   Optional<UserCollection> findByName(String name);
 
+  int countByOwner(User owner);
+
   boolean existsByName(String name);
 }

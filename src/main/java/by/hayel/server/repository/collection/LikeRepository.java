@@ -7,5 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
+  int countByAuthor(User author);
+
   void deleteAllByAuthor(User author);
 }
