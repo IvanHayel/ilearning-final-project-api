@@ -48,6 +48,11 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
+  public Optional<User> getUserByEmail(String email) {
+    return repository.findByEmail(email);
+  }
+
+  @Override
   public boolean isUsernameAlreadyExist(String username) {
     return repository.existsByUsername(username);
   }
