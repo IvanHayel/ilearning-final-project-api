@@ -29,6 +29,7 @@ public class CloudinaryServiceImpl implements CloudinaryService {
 
   Cloudinary cloudinary;
 
+  @Override
   public Map<String, String> sendToCloud(byte[] image) {
     try {
       Map<String, String> response = new HashMap<>();
