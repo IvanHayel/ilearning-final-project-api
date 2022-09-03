@@ -4,6 +4,7 @@ import by.hayel.server.mapper.collection.CommentMapper;
 import by.hayel.server.model.entity.collection.CollectionItem;
 import by.hayel.server.model.entity.collection.Comment;
 import by.hayel.server.model.entity.collection.dto.CommentDto;
+import by.hayel.server.model.entity.user.User;
 import by.hayel.server.repository.collection.CommentRepository;
 import by.hayel.server.service.collection.CommentService;
 import by.hayel.server.service.security.AuthenticationService;
@@ -30,5 +31,10 @@ public class CommentServiceImpl implements CommentService {
     comment.setItem(item);
     comment.setAuthor(user);
     return repository.save(comment);
+  }
+
+  @Override
+  public int countByAuthor(User user) {
+    return repository.countByAuthor(user);
   }
 }

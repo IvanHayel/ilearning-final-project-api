@@ -114,6 +114,12 @@ public class CollectionsController {
     return themeService.getThemes();
   }
 
+  @GetMapping("/statistics")
+  @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'ROOT')")
+  public ResponseEntity<ServerResponse> getUserStatistics() {
+    return collectionsService.getUserStatistics();
+  }
+
   @PostMapping
   @PreAuthorize("hasAnyRole('USER', 'ADMIN', 'ROOT')")
   public void addCollection(@Valid @RequestBody CollectionRequest request) {

@@ -19,19 +19,23 @@ import by.hayel.server.model.entity.user.User;
 import by.hayel.server.repository.collection.UserCollectionRepository;
 import by.hayel.server.service.cloud.CloudinaryService;
 import by.hayel.server.service.collection.CollectionsService;
+import by.hayel.server.service.collection.CommentService;
 import by.hayel.server.service.collection.ItemService;
 import by.hayel.server.service.collection.LikeService;
 import by.hayel.server.service.collection.TagService;
 import by.hayel.server.service.collection.ThemeService;
 import by.hayel.server.service.security.AuthenticationService;
+import by.hayel.server.web.payload.ServerResponse;
 import by.hayel.server.web.payload.request.CollectionRequest;
 import by.hayel.server.web.payload.request.ItemRequest;
+import by.hayel.server.web.payload.response.StatisticsResponse;
 import java.util.List;
 import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +53,7 @@ public class CollectionsServiceImpl implements CollectionsService {
   ThemeService themeService;
   TagService tagService;
   LikeService likeService;
+  CommentService commentService;
 
   @Override
   @Transactional
@@ -293,5 +298,16 @@ public class CollectionsServiceImpl implements CollectionsService {
             .limit(count)
             .toList();
     return mapper.userCollectionsToUserCollectionDtos(top);
+  }
+
+  @Override
+  @Transactional
+  public ResponseEntity<ServerResponse> getUserStatistics() {
+    var user = authenticationService.getCurrentUser();
+    int collectionsCount = repository.countByOwner(user);
+    int likesCount = likeService.countByAuthor(user);
+    int commentsCount = commentService.countByAuthor(user);
+    ServerResponse response = new StatisticsResponse(collectionsCount, likesCount, commentsCount);
+    return ResponseEntity.ok(response);
   }
 }

@@ -25,4 +25,9 @@ public class LikeServiceImpl implements LikeService {
   public void deleteAllByAuthor(User user) {
     repository.deleteAllByAuthor(user);
   }
+
+  @Override
+  public int countByAuthor(User user) {
+    return repository.countByAuthor(user);
+  }
 }
