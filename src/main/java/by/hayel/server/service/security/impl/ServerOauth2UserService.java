@@ -75,6 +75,6 @@ public class ServerOauth2UserService extends DefaultOAuth2UserService {
     boolean isFirstCapitalized = true;
     String camelCase = CaseUtils.toCamelCase(seed, isFirstCapitalized, availableDelimiters);
     if(!userService.isUsernameAlreadyExist(camelCase)) return camelCase;
-    return seed + GENERATOR.nextInt(10);
+    return generateUniqueUsername(seed + GENERATOR.nextInt(10));
   }
 }
