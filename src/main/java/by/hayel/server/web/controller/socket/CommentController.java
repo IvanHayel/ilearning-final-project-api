@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CommentController {
+  private static final String DESTINATION_ITEM = "/comment/items/";
   private static final String DESTINATION_PRIVATE = "/private";
 
   ItemService itemService;
@@ -24,7 +25,7 @@ public class CommentController {
   public CommentDto handleComment(@DestinationVariable Long id, @Payload CommentDto commentDto) {
     var owner = itemService.getItemOwner(id);
     var comment = itemService.addComment(id, commentDto);
-    template.convertAndSend("/comment/items/" + id, comment);
+    template.convertAndSend(DESTINATION_ITEM + id, comment);
     template.convertAndSendToUser(owner, DESTINATION_PRIVATE, comment);
     return comment;
   }

@@ -3,7 +3,6 @@ package by.hayel.server.web.controller.rest;
 import by.hayel.server.model.entity.user.dto.UserDto;
 import by.hayel.server.model.message.LocaleMessage;
 import by.hayel.server.service.message.MessageService;
-import by.hayel.server.service.search.HibernateSearchService;
 import by.hayel.server.service.user.UserService;
 import by.hayel.server.web.payload.ServerResponse;
 import java.util.List;
@@ -28,7 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserController {
   UserService userService;
-  HibernateSearchService searchService;
   MessageService messageService;
 
   @GetMapping

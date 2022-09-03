@@ -12,6 +12,8 @@ public interface UserService {
 
   Optional<User> getUserByUsername(String username);
 
+  Optional<User> getUserByEmail(String email);
+
   boolean isUsernameAlreadyExist(String username);
 
   boolean isEmailAlreadyExist(String email);
