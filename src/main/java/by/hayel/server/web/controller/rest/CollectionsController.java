@@ -40,22 +40,6 @@ public class CollectionsController {
   ThemeService themeService;
   TagService tagService;
 
-  private CollectionsSortDirection parseSortDirection(@Nullable String direction) {
-    try {
-      return CollectionsSortDirection.valueOf(direction);
-    } catch (IllegalArgumentException | NullPointerException exception) {
-      return CollectionsSortDirection.DEFAULT;
-    }
-  }
-
-  private CollectionsSortStrategy parseSortStrategy(@Nullable String strategy) {
-    try {
-      return CollectionsSortStrategy.valueOf(strategy);
-    } catch (IllegalArgumentException | NullPointerException exception) {
-      return CollectionsSortStrategy.DEFAULT;
-    }
-  }
-
   @GetMapping
   public List<UserCollectionDto> getGlobalCollections(
       @RequestParam(required = false) String direction,
@@ -74,16 +58,6 @@ public class CollectionsController {
     return collectionsService.getUserCollections(sortDirection, sortStrategy);
   }
 
-  @GetMapping("/top/{count}")
-  public List<UserCollectionDto> getTopUserCollections(@PathVariable Long count) {
-    return collectionsService.getTopUserCollections(count);
-  }
-
-  @GetMapping("/{name}")
-  public UserCollectionDto getCollection(@PathVariable String name) {
-    return collectionsService.getCollectionDtoByName(name);
-  }
-
   @GetMapping("/{name}/items")
   public List<CollectionItemDto> getCollectionItems(
       @PathVariable String name,
@@ -92,6 +66,32 @@ public class CollectionsController {
     var sortDirection = parseSortDirection(direction);
     var sortStrategy = parseSortStrategy(strategy);
     return collectionsService.getCollectionItems(name, sortDirection, sortStrategy);
+  }
+
+  private CollectionsSortDirection parseSortDirection(@Nullable String direction) {
+    try {
+      return CollectionsSortDirection.valueOf(direction);
+    } catch (IllegalArgumentException | NullPointerException exception) {
+      return CollectionsSortDirection.DEFAULT;
+    }
+  }
+
+  private CollectionsSortStrategy parseSortStrategy(@Nullable String strategy) {
+    try {
+      return CollectionsSortStrategy.valueOf(strategy);
+    } catch (IllegalArgumentException | NullPointerException exception) {
+      return CollectionsSortStrategy.DEFAULT;
+    }
+  }
+
+  @GetMapping("/top/{count}")
+  public List<UserCollectionDto> getTopUserCollections(@PathVariable Long count) {
+    return collectionsService.getTopUserCollections(count);
+  }
+
+  @GetMapping("/{name}")
+  public UserCollectionDto getCollection(@PathVariable String name) {
+    return collectionsService.getCollectionDtoByName(name);
   }
 
   @GetMapping("/{name}/items/{id}")

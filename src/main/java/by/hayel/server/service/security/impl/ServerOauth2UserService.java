@@ -66,15 +66,15 @@ public class ServerOauth2UserService extends DefaultOAuth2UserService {
   }
 
   private String generateUniqueUsername(String seed) {
-    if(!userService.isUsernameAlreadyExist(seed)) return seed;
+    if (!userService.isUsernameAlreadyExist(seed)) return seed;
     String upperCase = seed.toUpperCase();
-    if(!userService.isUsernameAlreadyExist(upperCase)) return upperCase;
+    if (!userService.isUsernameAlreadyExist(upperCase)) return upperCase;
     String lowerCase = seed.toLowerCase();
-    if(!userService.isUsernameAlreadyExist(lowerCase)) return lowerCase;
-    char[] availableDelimiters = new char[]{' ', ';', ',', '.', '-'};
+    if (!userService.isUsernameAlreadyExist(lowerCase)) return lowerCase;
+    char[] availableDelimiters = new char[] {' ', ';', ',', '.', '-'};
     boolean isFirstCapitalized = true;
     String camelCase = CaseUtils.toCamelCase(seed, isFirstCapitalized, availableDelimiters);
-    if(!userService.isUsernameAlreadyExist(camelCase)) return camelCase;
+    if (!userService.isUsernameAlreadyExist(camelCase)) return camelCase;
     return generateUniqueUsername(seed + GENERATOR.nextInt(10));
   }
 }

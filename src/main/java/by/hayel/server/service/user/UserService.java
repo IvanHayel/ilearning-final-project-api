@@ -2,8 +2,11 @@ package by.hayel.server.service.user;
 
 import by.hayel.server.model.entity.user.User;
 import by.hayel.server.model.entity.user.dto.UserDto;
+import by.hayel.server.web.payload.ServerResponse;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import org.springframework.http.ResponseEntity;
 
 public interface UserService {
   List<UserDto> getAllUsers();
@@ -41,4 +44,14 @@ public interface UserService {
   void grantAdminRights(Long id);
 
   void revokeAdminRights(Long id);
+
+  ResponseEntity<ServerResponse> deleteUser(Long id, Locale locale);
+
+  ResponseEntity<ServerResponse> blockUser(Long id, Locale locale);
+
+  ResponseEntity<ServerResponse> unblockUser(Long id, Locale locale);
+
+  ResponseEntity<ServerResponse> grantUserAdminRights(Long id, Locale locale);
+
+  ResponseEntity<ServerResponse> revokeUserAdminRights(Long id, Locale locale);
 }

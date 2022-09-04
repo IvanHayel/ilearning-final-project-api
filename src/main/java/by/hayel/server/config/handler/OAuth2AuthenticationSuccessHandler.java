@@ -7,6 +7,7 @@ import java.io.IOException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.Authentication;
@@ -37,12 +38,16 @@ public class OAuth2AuthenticationSuccessHandler extends SimpleUrlAuthenticationS
     String targetUrl = property.getRedirect();
     if (principal != null) {
       String token = jwtService.generateTokenFromUsername(principal.getUsername());
-      targetUrl =
-          UriComponentsBuilder.fromUriString(targetUrl)
-              .queryParam(property.getQueryParameter(), token)
-              .build()
-              .toUriString();
+      targetUrl = buildTargetUrl(targetUrl, token);
       getRedirectStrategy().sendRedirect(request, response, targetUrl);
     }
+  }
+
+  @NonNull
+  private String buildTargetUrl(String targetUrl, String token) {
+    return UriComponentsBuilder.fromUriString(targetUrl)
+        .queryParam(property.getQueryParameter(), token)
+        .build()
+        .toUriString();
   }
 }

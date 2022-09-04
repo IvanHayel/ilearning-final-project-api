@@ -6,18 +6,22 @@ import by.hayel.server.model.entity.user.Role;
 import by.hayel.server.model.entity.user.RoleName;
 import by.hayel.server.model.entity.user.User;
 import by.hayel.server.model.entity.user.dto.UserDto;
+import by.hayel.server.model.message.LocaleMessage;
 import by.hayel.server.repository.user.UserRepository;
-import by.hayel.server.service.collection.LikeService;
+import by.hayel.server.service.message.MessageService;
 import by.hayel.server.service.security.RefreshTokenService;
 import by.hayel.server.service.user.RoleService;
 import by.hayel.server.service.user.UserService;
+import by.hayel.server.web.payload.ServerResponse;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.Set;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserServiceImpl implements UserService {
   UserRepository repository;
   UserMapper mapper;
+
   RoleService roleService;
-  LikeService likeService;
+  MessageService messageService;
   RefreshTokenService refreshTokenService;
 
   @Override
@@ -94,7 +99,6 @@ public class UserServiceImpl implements UserService {
   @Override
   @Transactional
   public void deleteById(Long id) {
-    likeService.deleteAllByAuthor(getUserById(id));
     repository.deleteById(id);
   }
 
@@ -155,5 +159,57 @@ public class UserServiceImpl implements UserService {
     user.setRoles(roles);
     repository.save(user);
     refreshTokenService.deleteAllByUser(user);
+  }
+
+  @Override
+  @Transactional
+  public ResponseEntity<ServerResponse> deleteUser(Long id, Locale locale) {
+    ServerResponse message;
+    if (isRoot(id)) {
+      message = messageService.buildMessageResponse(LocaleMessage.ERROR_DELETE_ROOT, locale);
+      return ResponseEntity.badRequest().body(message);
+    }
+    deleteById(id);
+    message = messageService.buildMessageResponse(LocaleMessage.SUCCESS_DELETE_USER, locale);
+    return ResponseEntity.ok(message);
+  }
+
+  @Override
+  @Transactional
+  public ResponseEntity<ServerResponse> blockUser(Long id, Locale locale) {
+    ServerResponse message;
+    if (isRoot(id)) {
+      message = messageService.buildMessageResponse(LocaleMessage.ERROR_BLOCK_ROOT, locale);
+      return ResponseEntity.badRequest().body(message);
+    }
+    blockById(id);
+    message = messageService.buildMessageResponse(LocaleMessage.SUCCESS_BLOCK_USER, locale);
+    return ResponseEntity.ok(message);
+  }
+
+  @Override
+  @Transactional
+  public ResponseEntity<ServerResponse> unblockUser(Long id, Locale locale) {
+    unblockById(id);
+    var message = messageService.buildMessageResponse(LocaleMessage.SUCCESS_UNBLOCK_USER, locale);
+    return ResponseEntity.ok(message);
+  }
+
+  @Override
+  @Transactional
+  public ResponseEntity<ServerResponse> grantUserAdminRights(Long id, Locale locale) {
+    grantAdminRights(id);
+    var message =
+        messageService.buildMessageResponse(LocaleMessage.SUCCESS_GRANT_ADMIN_RIGHTS, locale);
+    return ResponseEntity.ok(message);
+  }
+
+  @Override
+  @Transactional
+  public ResponseEntity<ServerResponse> revokeUserAdminRights(Long id, Locale locale) {
+    revokeAdminRights(id);
+    var message =
+        messageService.buildMessageResponse(LocaleMessage.SUCCESS_REVOKE_ADMIN_RIGHTS, locale);
+    return ResponseEntity.ok(message);
   }
 }

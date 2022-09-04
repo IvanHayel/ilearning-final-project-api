@@ -14,8 +14,6 @@ public interface TagService {
 
   Tag getTag(String tagName);
 
-  boolean exists(String tagName);
-
   void removeIfNoChild(Tag tag);
 
   void verifyTags();
