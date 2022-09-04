@@ -7,7 +7,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,12 +17,6 @@ public class LikeServiceImpl implements LikeService {
   @Override
   public void delete(Long id) {
     repository.deleteById(id);
-  }
-
-  @Override
-  @Transactional
-  public void deleteAllByAuthor(User user) {
-    repository.deleteAllByAuthor(user);
   }
 
   @Override

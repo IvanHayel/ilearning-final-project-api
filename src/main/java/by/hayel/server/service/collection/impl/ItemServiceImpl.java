@@ -43,7 +43,8 @@ public class ItemServiceImpl implements ItemService {
   @Override
   @Transactional
   public CollectionItemDto getItemByCollectionAndId(UserCollection collection, Long id) {
-    var item = repository.findByCollectionAndId(collection, id).orElseThrow(ItemNotFoundException::new);
+    var item =
+        repository.findByCollectionAndId(collection, id).orElseThrow(ItemNotFoundException::new);
     return mapper.collectionItemToCollectionItemDto(item);
   }
 
@@ -51,7 +52,6 @@ public class ItemServiceImpl implements ItemService {
   public CollectionItem getItemById(Long id) {
     return repository.findById(id).orElseThrow(ItemNotFoundException::new);
   }
-
 
   @Override
   @Transactional

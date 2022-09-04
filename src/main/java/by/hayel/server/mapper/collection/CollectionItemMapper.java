@@ -20,8 +20,6 @@ import org.mapstruct.ReportingPolicy;
     },
     injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface CollectionItemMapper {
-  CollectionItem collectionItemDtoToCollectionItem(CollectionItemDto collectionItemDto);
-
   CollectionItemDto collectionItemToCollectionItemDto(CollectionItem collectionItem);
 
   List<CollectionItemDto> collectionItemsToCollectionItemDtos(List<CollectionItem> items);

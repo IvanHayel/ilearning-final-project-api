@@ -8,8 +8,6 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(unmappedTargetPolicy = ReportingPolicy.IGNORE, componentModel = "spring")
 public interface ThemeMapper {
-  Theme themeDtoToTheme(ThemeDto themeDto);
-
   ThemeDto themeToThemeDto(Theme theme);
 
   List<ThemeDto> themesToThemeDtos(List<Theme> themes);

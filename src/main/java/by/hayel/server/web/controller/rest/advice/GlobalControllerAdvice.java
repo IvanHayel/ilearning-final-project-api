@@ -1,5 +1,6 @@
 package by.hayel.server.web.controller.rest.advice;
 
+import by.hayel.server.exception.cloud.CloudinaryDeleteException;
 import by.hayel.server.exception.cloud.CloudinaryUploadException;
 import by.hayel.server.exception.security.AccessDeniedException;
 import by.hayel.server.model.message.AdviceErrorMessage;
@@ -27,6 +28,15 @@ public class GlobalControllerAdvice {
     Locale locale = request.getLocale();
     String description = request.getDescription(false);
     String message = messageService.getMessage(LocaleMessage.ERROR_CLOUDINARY_UPLOAD, locale);
+    return new AdviceErrorMessage(HttpStatus.SERVICE_UNAVAILABLE.value(), message, description);
+  }
+
+  @ExceptionHandler(CloudinaryDeleteException.class)
+  @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
+  public AdviceErrorMessage handleCloudinaryDeleteException(WebRequest request) {
+    Locale locale = request.getLocale();
+    String description = request.getDescription(false);
+    String message = messageService.getMessage(LocaleMessage.ERROR_CLOUDINARY_DELETE, locale);
     return new AdviceErrorMessage(HttpStatus.SERVICE_UNAVAILABLE.value(), message, description);
   }
 

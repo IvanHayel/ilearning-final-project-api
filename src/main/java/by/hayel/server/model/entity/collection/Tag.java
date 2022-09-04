@@ -36,10 +36,6 @@ public class Tag extends BaseEntity {
       cascade = {CascadeType.PERSIST, CascadeType.MERGE})
   Set<CollectionItem> items = new HashSet<>();
 
-  public int countUsages() {
-    return items.size();
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {

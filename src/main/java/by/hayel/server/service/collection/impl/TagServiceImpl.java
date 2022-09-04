@@ -51,11 +51,6 @@ public class TagServiceImpl implements TagService {
   }
 
   @Override
-  public boolean exists(String tagName) {
-    return repository.existsByName(tagName);
-  }
-
-  @Override
   @Transactional
   public void removeIfNoChild(Tag tag) {
     if (tag.getItems().isEmpty()) {

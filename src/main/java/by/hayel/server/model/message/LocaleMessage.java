@@ -28,6 +28,7 @@ public enum LocaleMessage {
   ERROR_REFRESH_TOKEN_NOT_FOUND("error.refresh.token.not.found"),
   ERROR_COLLECTION_NAME_ALREADY_EXIST("error.collection.name.already.exist"),
   ERROR_CLOUDINARY_UPLOAD("error.cloudinary.upload"),
+  ERROR_CLOUDINARY_DELETE("error.cloudinary.delete"),
   ERROR_COLLECTION_NOT_FOUND("error.collection.not.found"),
   ERROR_ACCESS_DENIED("error.access.denied"),
   ERROR_ITEM_NAME_ALREADY_EXIST("error.item.name.already.exist"),
